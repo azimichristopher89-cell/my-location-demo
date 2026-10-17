@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Location Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px 15px;
+      background: #f0f5fa;
+    }
+    main {
+      max-width: 450px;
+      margin: auto;
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+    }
+    button {
+      padding: 14px 20px;
+      background: #1769e0;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    #result { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>📍 Location Sharing</h1>
+    <p>Tap below to share your location with this demo.
+    Your coordinates stay on this page.</p>
+    <button id="share">Share my location</button>
+    <div id="result" aria-live="polite"></div>
+  </main>
+  <script>
+    const result = document.getElementById("result");
+
+    document.getElementById("share").onclick = () => {
+      if (!navigator.geolocation) {
+        result.textContent = "Location is not supported.";
+        return;
+      }
+
+      result.textContent = "Waiting for permission...";
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+
+          result.replaceChildren();
+
+          const coords = document.createElement("p");
+          coords.textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+          result.appendChild(coords);
+
+          const map = document.createElement("a");
+          map.href = `https://maps.google.com/?q=${lat},${lon}`;
+          map.textContent = "View on Google Maps";
+          map.target = "_blank";
+          map.rel = "noopener noreferrer";
+          result.appendChild(map);
+        },
+        () => {
+          result.textContent =
+            "Location unavailable or permission denied.";
+        }
+      );
+    };
+  </script>
+</body>
+</html>
